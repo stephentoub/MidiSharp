@@ -101,7 +101,7 @@ namespace MidiSharp
         /// Regardless, the reference passed in should not be used after this call as the old
         /// sequence could be unusable if a different reference was returned.
         /// </remarks>
-        public static MidiSequence Convert(this MidiSequence sequence, int format)
+        public static MidiSequence Convert(this MidiSequence sequence, Format format)
         {
             return Convert(sequence, format, FormatConversionOptions.None);
         }
@@ -111,17 +111,20 @@ namespace MidiSharp
         /// <param name="format">The format to which we want to convert the sequence.</param>
         /// <param name="options">Options used when doing the conversion.</param>
         /// <returns>The new, converted sequence.</returns>
-        public static MidiSequence Convert(this MidiSequence sequence, int format, FormatConversionOptions options)
+        public static MidiSequence Convert(this MidiSequence sequence, Format format, FormatConversionOptions options)
         {
             Validate.NonNull("sequence", sequence);
-            Validate.InRange("format", format, 0, 2);
+            Validate.InRange("format", (int)format, (int)Format.Zero, (int)Format.Two);
 
             if (sequence.Format == format) {
                 // If the desired format is the same as the original, just return a copy.
+                // No transformation is necessary.
                 sequence = new MidiSequence(sequence);
             }
-            else if (format != 0 || sequence.TrackCount == 1) {
+            else if (format != Format.Zero || sequence.TrackCount == 1) {
                 // If the desired format is is not 0 or there's only one track, just copy the sequence with a different format number.
+                // If it's not zero, then multiple tracks are acceptable, so no transformation is necessary.
+                // Or if there's only one track, then there's no possible transformation to be done.
                 var newSequence = new MidiSequence(format, sequence.Division);
                 foreach (MidiTrack t in sequence) {
                     newSequence.AddTrack(new MidiTrack(t));
@@ -129,7 +132,8 @@ namespace MidiSharp
                 sequence = newSequence;
             }
             else {
-                // Now the harder cases, converting to format 0.  We need to combine all tracks into 1.
+                // Now the harder cases, converting to format 0.  We need to combine all tracks into 1,
+                // as format 0 requires that there only be a single track with all of the events for the song.
                 sequence = new MidiSequence(sequence);
 
                 // Iterate through all events in all tracks and change deltaTimes to actual times.

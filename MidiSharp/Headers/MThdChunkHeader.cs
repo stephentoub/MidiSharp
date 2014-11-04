@@ -15,7 +15,7 @@ namespace MidiSharp.Headers
         /// <summary>Additional chunk header data.</summary>
         private readonly ChunkHeader m_header;
         /// <summary>The format for the MIDI file (0, 1, or 2).</summary>
-        private readonly int m_format;
+        private readonly Format m_format;
         /// <summary>The number of tracks in the MIDI sequence.</summary>
         private readonly int m_numTracks;
         /// <summary>Specifies the meaning of the delta-times</summary>
@@ -35,10 +35,10 @@ namespace MidiSharp.Headers
         /// ticks which make up a quarter-note. If number is negative, then bits 14 through 0 represent
         /// subdivisions of a second, in a way consistent with SMPTE and MIDI time code.
         /// </param>
-        public MThdChunkHeader(int format, int numTracks, int division)
+        public MThdChunkHeader(Format format, int numTracks, int division)
         {
             // Verify the parameters
-            Validate.InRange("format", format, 0, 2);
+            Validate.InRange("format", (int)format, (int)MidiSharp.Format.Zero, (int)MidiSharp.Format.Two);
             Validate.InRange("numTracks", numTracks, 1, int.MaxValue);
             Validate.InRange("division", division, 1, int.MaxValue);
 
@@ -53,7 +53,7 @@ namespace MidiSharp.Headers
         /// <summary>Gets additional chunk header data.</summary>
         public ChunkHeader Header { get { return m_header; } }
         /// <summary>Gets the format for the MIDI file (0, 1, or 2).</summary>
-        public int Format { get { return m_format; } }
+        public Format Format { get { return m_format; } }
         /// <summary>Gets the number of tracks in the MIDI sequence.</summary>
         public int NumberOfTracks { get { return m_numTracks; } }
         /// <summary>Gets the meaning of the delta-times</summary>
@@ -82,8 +82,8 @@ namespace MidiSharp.Headers
             m_header.Write(outputStream);
 
             // Add format
-            outputStream.WriteByte((byte)((m_format & 0xFF00) >> 8));
-            outputStream.WriteByte((byte)(m_format & 0x00FF));
+            outputStream.WriteByte((byte)(((int)m_format & 0xFF00) >> 8));
+            outputStream.WriteByte((byte)((int)m_format & 0x00FF));
 
             // Add numTracks
             outputStream.WriteByte((byte)((m_numTracks & 0xFF00) >> 8));
@@ -133,7 +133,7 @@ namespace MidiSharp.Headers
             }
 
             // Create a new MThd header and return it
-            return new MThdChunkHeader(format, numTracks, division);
+            return new MThdChunkHeader((Format)format, numTracks, division);
         }
     }
 }

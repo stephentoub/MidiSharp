@@ -18,7 +18,7 @@ namespace MidiSharp
 	public class MidiSequence : IEnumerable<MidiTrack>
 	{
 		/// <summary>The format of the MIDI file (0, 1, or 2).</summary>
-		private int m_format;
+		private Format m_format;
 		/// <summary>The meaning of delta-times.</summary>
 		private int m_division;
 		/// <summary>The tracks in the MIDI sequence.</summary>
@@ -32,7 +32,7 @@ namespace MidiSharp
 		/// 2 - one or more sequentially independent single-track patterns
 		/// </param>
 		/// <param name="division">The meaning of the delta-times in the file.</param>
-		public MidiSequence(int format, int division)
+		public MidiSequence(Format format, int division)
 		{
 			// Store values
 			Format = format;
@@ -50,10 +50,14 @@ namespace MidiSharp
         }
 
 		/// <summary>Gets the format of the sequence.</summary>
-		public int Format 
+		public Format Format 
         { 
             get { return m_format; }
-            private set { Validate.SetIfInRange("Format", ref m_format, value, 0, 2); }
+            private set 
+            { 
+                Validate.InRange("Format", (int)value, (int)Format.Zero, (int)Format.Two);
+                m_format = value;
+            }
         }
 
 		/// <summary>
@@ -117,7 +121,9 @@ namespace MidiSharp
             }
 
 			// If this is format 0, we can only have 1 track
-			if (m_format == 0 && m_tracks.Count >= 1) throw new InvalidOperationException("Format 0 MIDI files can only have 1 track.");
+            if (m_format == Format.Zero && m_tracks.Count >= 1) {
+                throw new InvalidOperationException("Format 0 MIDI files can only have 1 track.");
+            }
 
 			// Add the track.
 			m_tracks.Add(track);
@@ -220,7 +226,7 @@ namespace MidiSharp
             Validate.InRange("numTracks", numTracks, 1, int.MaxValue);
 
 			// Write out the main header for the sequence
-			MThdChunkHeader mainHeader = new MThdChunkHeader(m_format, numTracks, m_division);
+			MThdChunkHeader mainHeader = new MThdChunkHeader(Format, numTracks, m_division);
 			mainHeader.Write(outputStream);
 		}
 

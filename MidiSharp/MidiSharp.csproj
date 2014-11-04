@@ -73,6 +73,7 @@
     <Compile Include="Events\Voice\PitchWheelVoiceMidiEvent.cs" />
     <Compile Include="Events\Voice\ProgramChangeVoiceMidiEvent.cs" />
     <Compile Include="Events\Voice\VoiceMidiEvent.cs" />
+    <Compile Include="Format.cs" />
     <Compile Include="GeneralMidiInstrument.cs" />
     <Compile Include="GeneralMidiPercussion.cs" />
     <Compile Include="Headers\ChunkHeader.cs" />
