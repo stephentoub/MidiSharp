@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8794A9D6-426C-4C77-8BAF-B603373CC4AC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MidiSharp</RootNamespace>
+    <AssemblyName>MidiSharp</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkProfile>Profile328</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\MidiSharp.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\MidiSharp.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- A reference to the entire .NET Framework is automatically included -->
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controller.cs" />
+    <Compile Include="DivisionType.cs" />
+    <Compile Include="Events\Meta\ChannelPrefixMetaMidiEvent.cs" />
+    <Compile Include="Events\Meta\EndOfTrackMetaMidiEvent.cs" />
+    <Compile Include="Events\Meta\KeySignatureMetaMidiEvent.cs" />
+    <Compile Include="Events\Meta\MetaMidiEvent.cs" />
+    <Compile Include="Events\Meta\MidiPortMetaMidiEvent.cs" />
+    <Compile Include="Events\Meta\ProprietaryMetaMidiEvent.cs" />
+    <Compile Include="Events\Meta\SequenceNumberMetaMidiEvent.cs" />
+    <Compile Include="Events\Meta\SMPTEOffsetMetaMidiEvent.cs" />
+    <Compile Include="Events\Meta\TempoMetaMidiEvent.cs" />
+    <Compile Include="Events\Meta\Text\BaseTextMetaMidiEvent.cs" />
+    <Compile Include="Events\Meta\Text\CopyrightTextMetaMidiEvent.cs" />
+    <Compile Include="Events\Meta\Text\CuePointTextMetaMidiEvent.cs" />
+    <Compile Include="Events\Meta\Text\DeviceNameTextMetaMidiEvent.cs" />
+    <Compile Include="Events\Meta\Text\InstrumentTextMetaMidiEvent.cs" />
+    <Compile Include="Events\Meta\Text\LyricTextMetaMidiEvent.cs" />
+    <Compile Include="Events\Meta\Text\MarkerTextMetaMidiEvent.cs" />
+    <Compile Include="Events\Meta\Text\ProgramNameTextMetaMidiEvent.cs" />
+    <Compile Include="Events\Meta\Text\SequenceTrackNameTextMetaMidiEvent.cs" />
+    <Compile Include="Events\Meta\Text\TextMetaMidiEvent.cs" />
+    <Compile Include="Events\Meta\TimeSignatureMetaMidiEvent.cs" />
+    <Compile Include="Events\Meta\UnknownMetaMidiEvent.cs" />
+    <Compile Include="Events\MidiEvent.cs" />
+    <Compile Include="Events\SystemExclusiveMidiEvent.cs" />
+    <Compile Include="Events\Voice\ChannelPressureVoiceMidiEvent.cs" />
+    <Compile Include="Events\Voice\ControllerVoiceMidiEvent.cs" />
+    <Compile Include="Events\Voice\Note\AftertouchNoteVoiceMidiEvent.cs" />
+    <Compile Include="Events\Voice\Note\NoteVoiceMidiEvent.cs" />
+    <Compile Include="Events\Voice\Note\OffNoteVoiceMidiEvent.cs" />
+    <Compile Include="Events\Voice\Note\OnNoteVoiceMidiEvent.cs" />
+    <Compile Include="Events\Voice\PitchWheelVoiceMidiEvent.cs" />
+    <Compile Include="Events\Voice\ProgramChangeVoiceMidiEvent.cs" />
+    <Compile Include="Events\Voice\VoiceMidiEvent.cs" />
+    <Compile Include="GeneralMidiInstrument.cs" />
+    <Compile Include="GeneralMidiPercussion.cs" />
+    <Compile Include="Headers\ChunkHeader.cs" />
+    <Compile Include="Headers\MThdChunkHeader.cs" />
+    <Compile Include="Headers\MTrkChunkHeader.cs" />
+    <Compile Include="Key.cs" />
+    <Compile Include="ManufacturerId.cs" />
+    <Compile Include="MidiEventListExtensions.cs" />
+    <Compile Include="MidiParser.cs" />
+    <Compile Include="MidiSequence.cs" />
+    <Compile Include="MidiSequenceExtensions.cs" />
+    <Compile Include="MidiTrack.cs" />
+    <Compile Include="PitchWheelSteps.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpecialChannels.cs" />
+    <Compile Include="Tonality.cs" />
+    <Compile Include="Validate.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
