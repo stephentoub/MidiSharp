@@ -30,7 +30,7 @@ namespace MidiSharp.Events.Meta.Text
         /// <returns>A string representation of the event.</returns>
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "{0}\t{1}", base.ToString(), Text);
+            return string.Format(CultureInfo.InvariantCulture, "{0}\t{1}", base.ToString(), Text.Trim());
         }
 
         /// <summary>Write the event to the output stream.</summary>
