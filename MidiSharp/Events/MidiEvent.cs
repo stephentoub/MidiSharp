@@ -64,8 +64,6 @@ namespace MidiSharp.Events
 		{
 			long buffer;
 
-			// TODO: Clean this up!
-
 			// Parse the value into bytes containing each set of 7-bits and a 1-bit marker
 			// for whether there are more bytes in the length
 			buffer = value & 0x7f;
