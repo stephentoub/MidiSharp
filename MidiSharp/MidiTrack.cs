@@ -39,7 +39,10 @@ namespace MidiSharp
         /// <returns>The track to copy.</returns>
         public MidiTrack(MidiTrack source)
         {
-            m_events = new List<MidiEvent>(source.Events);
+            m_events = new List<MidiEvent>();
+            foreach (var e in source.Events) {
+                m_events.Add(e.DeepClone());
+            }
             m_requireEndOfTrack = source.RequireEndOfTrack;
         }
 

@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtractLyrics", "Samples\Ex
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DumpMidi", "Samples\DumpMidi\DumpMidi.csproj", "{2F89DD88-6CF5-4EA1-8746-8ECB1B18D713}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MidiSharp.Tests", "MidiSharp.Tests\MidiSharp.Tests.csproj", "{E31890C7-6E7F-478B-BC82-5BEBB36853DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{2F89DD88-6CF5-4EA1-8746-8ECB1B18D713}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F89DD88-6CF5-4EA1-8746-8ECB1B18D713}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F89DD88-6CF5-4EA1-8746-8ECB1B18D713}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E31890C7-6E7F-478B-BC82-5BEBB36853DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E31890C7-6E7F-478B-BC82-5BEBB36853DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E31890C7-6E7F-478B-BC82-5BEBB36853DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E31890C7-6E7F-478B-BC82-5BEBB36853DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

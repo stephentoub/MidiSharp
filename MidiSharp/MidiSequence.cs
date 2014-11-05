@@ -25,6 +25,11 @@ namespace MidiSharp
 		/// <summary>The tracks in the MIDI sequence.</summary>
 		private readonly List<MidiTrack> m_tracks;
 
+        /// <summary>Initialize the MIDI sequence with default values for format and division.</summary>
+        public MidiSequence() : this(Format.Zero, 480)
+        {
+        }
+
 		/// <summary>Initialize the MIDI sequence.</summary>
 		/// <param name="format">
 		/// The format for the MIDI file (0, 1, or 2).
