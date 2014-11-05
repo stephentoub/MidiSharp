@@ -1,5 +1,5 @@
 ﻿//----------------------------------------------------------------------- 
-// <copyright file="SequenceTests.cs.cs" company="Stephen Toub"> 
+// <copyright file="SequenceTests.cs" company="Stephen Toub"> 
 //     Copyright (c) Stephen Toub. All rights reserved. 
 // </copyright> 
 //----------------------------------------------------------------------- 
