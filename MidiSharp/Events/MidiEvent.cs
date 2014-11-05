@@ -60,8 +60,10 @@ namespace MidiSharp.Events
 		/// <summary>Writes bytes for a long value in the special 7-bit form.</summary>
 		/// <param name="outputStream">The stream to which the length should be written.</param>
 		/// <param name="value">The value to be converted and written.</param>
-		protected void WriteVariableLength(Stream outputStream, long value)
+		protected static void WriteVariableLength(Stream outputStream, long value)
 		{
+            Validate.NonNull("outputStream", outputStream);
+
 			long buffer;
 
 			// Parse the value into bytes containing each set of 7-bits and a 1-bit marker
@@ -147,7 +149,7 @@ namespace MidiSharp.Events
 			int noteValue = 0;
 
 			// Get's a value for the note name
-			switch(Char.ToLower(noteName[0]))
+			switch(Char.ToLowerInvariant(noteName[0]))
 			{
 				case 'c': noteValue = 0; break;
 				case 'd': noteValue = 2; break;
@@ -163,7 +165,7 @@ namespace MidiSharp.Events
 
 			// Get a value for the # or b if one exists.  If we want to allow multiple
 			// flats or sharps, just wrap this section of code in a loop.
-			char nextChar = Char.ToLower(noteName[curPos]);
+			char nextChar = Char.ToLowerInvariant(noteName[curPos]);
 			if (nextChar == 'b') 
 			{
 				noteValue--; curPos++;
@@ -205,7 +207,7 @@ namespace MidiSharp.Events
 		/// <returns>A string representation of the event.</returns>
 		public override string ToString()
 		{
-            return string.Format("{0}\t{1}", GetType().Name, DeltaTime);
+            return string.Format(CultureInfo.InvariantCulture, "{0}\t{1}", GetType().Name, DeltaTime);
 		}
 
 		/// <summary>Gets or sets the amount of time before this event.</summary>

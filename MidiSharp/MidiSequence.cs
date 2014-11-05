@@ -9,6 +9,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 
 namespace MidiSharp
@@ -44,6 +45,7 @@ namespace MidiSharp
         /// <param name="source">The source sequence from which to copy.</param>
         public MidiSequence(MidiSequence source) : this(source.Format, source.Division)
         {
+            Validate.NonNull("source", source);
             foreach (MidiTrack t in source) {
                 AddTrack(new MidiTrack(t));
             }
@@ -170,9 +172,10 @@ namespace MidiSharp
 		public override string ToString()
 		{
 			// Create a writer, dump to it, return the string
-			var writer = new StringWriter();
-			ToString(writer);
-			return writer.ToString();
+            using (var writer = new StringWriter(CultureInfo.InvariantCulture)) {
+                ToString(writer);
+                return writer.ToString();
+            }
 		}
 
 		/// <summary>Dumps the MIDI sequence to the writer in human-readable form.</summary>

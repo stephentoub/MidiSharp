@@ -50,8 +50,6 @@ namespace MidiSharp.Headers
             m_division = division;
         }
 
-        /// <summary>Gets additional chunk header data.</summary>
-        public ChunkHeader Header { get { return m_header; } }
         /// <summary>Gets the format for the MIDI file (0, 1, or 2).</summary>
         public Format Format { get { return m_format; } }
         /// <summary>Gets the number of tracks in the MIDI sequence.</summary>

@@ -43,7 +43,7 @@ namespace MidiSharp
                     // transposition (which makes sense), skip this event.
                     NoteVoiceMidiEvent nvme = ev as NoteVoiceMidiEvent;
                     if (nvme == null ||
-                        (!includeDrums && nvme.Channel == (byte)SpecialChannels.Percussion))
+                        (!includeDrums && nvme.Channel == (byte)SpecialChannel.Percussion))
                         continue;
 
                     // If the event is a NoteOn, NoteOff, or Aftertouch, shift the note
@@ -103,7 +103,7 @@ namespace MidiSharp
         /// </remarks>
         public static MidiSequence Convert(this MidiSequence sequence, Format format)
         {
-            return Convert(sequence, format, FormatConversionOptions.None);
+            return Convert(sequence, format, FormatConversionOption.None);
         }
 
         /// <summary>Converts the MIDI sequence into a new one with the desired format.</summary>
@@ -111,7 +111,7 @@ namespace MidiSharp
         /// <param name="format">The format to which we want to convert the sequence.</param>
         /// <param name="options">Options used when doing the conversion.</param>
         /// <returns>The new, converted sequence.</returns>
-        public static MidiSequence Convert(this MidiSequence sequence, Format format, FormatConversionOptions options)
+        public static MidiSequence Convert(this MidiSequence sequence, Format format, FormatConversionOption options)
         {
             Validate.NonNull("sequence", sequence);
             Validate.InRange("format", (int)format, (int)Format.Zero, (int)Format.Two);
@@ -148,8 +148,11 @@ namespace MidiSharp
                 foreach (MidiTrack track in sequence) {
                     foreach (MidiEvent midiEvent in track.Events) {
                         // If this event has a channel, and if we're storing tracks as channels, copy to it
-                        if ((options & FormatConversionOptions.CopyTrackToChannel) > 0 && (midiEvent is VoiceMidiEvent) && trackNumber >= 0 && trackNumber <= 0xF) {
-                            ((VoiceMidiEvent)midiEvent).Channel = (byte)trackNumber;
+                        if ((options & FormatConversionOption.CopyTrackToChannel) > 0 && trackNumber >= 0 && trackNumber <= 0xF) {
+                            var vme = midiEvent as VoiceMidiEvent;
+                            if (vme != null) {
+                                vme.Channel = (byte)trackNumber;
+                            }
                         }
 
                         // Add all events, except for end of track markers (we'll add our own)
@@ -176,7 +179,7 @@ namespace MidiSharp
         }
 
         /// <summary>Options used when performing a format conversion.</summary>
-        public enum FormatConversionOptions
+        public enum FormatConversionOption
         {
             /// <summary>No special formatting.</summary>
             None,

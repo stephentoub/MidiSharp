@@ -28,8 +28,6 @@ namespace MidiSharp.Headers
 			m_data = data;
 		}
 
-		/// <summary>Gets additional chunk header data.</summary>
-		public ChunkHeader Header { get { return m_header; } }
 		/// <summary>Gets the data for which this is a header.</summary>
 		public byte [] Data { get { return m_data; } }
 		/// <summary>Gets the MTrk header id.</summary>

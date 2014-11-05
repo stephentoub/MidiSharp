@@ -11,6 +11,7 @@ using MidiSharp.Headers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 
 namespace MidiSharp
@@ -73,15 +74,16 @@ namespace MidiSharp
 			// Make sure we have an end of track marker if we need one
 			if (!HasEndOfTrack && m_requireEndOfTrack) throw new InvalidOperationException("The track cannot be written until it has an end of track marker.");
 			
-			// Get the event data and write it out
-			MemoryStream memStream = new MemoryStream();
-            for (int i = 0; i < m_events.Count; i++) {
-                m_events[i].Write(memStream);
-            }
+            using (MemoryStream memStream = new MemoryStream()) {
+                // Get the event data and write it out
+                for (int i = 0; i < m_events.Count; i++) {
+                    m_events[i].Write(memStream);
+                }
 
-			// Tack on the header and write the whole thing out to the main stream.
-			MTrkChunkHeader header = new MTrkChunkHeader(memStream.ToArray());
-			header.Write(outputStream);
+                // Tack on the header and write the whole thing out to the main stream.
+                MTrkChunkHeader header = new MTrkChunkHeader(memStream.ToArray());
+                header.Write(outputStream);
+            }
 		}
 
 		/// <summary>Writes the track to a string in human-readable form.</summary>
@@ -89,9 +91,10 @@ namespace MidiSharp
 		public override string ToString()
 		{
 			// Create a writer, dump to it, return the string
-			StringWriter writer = new StringWriter();
-			ToString(writer);
-			return writer.ToString();
+            using (StringWriter writer = new StringWriter(CultureInfo.InvariantCulture)) {
+                ToString(writer);
+                return writer.ToString();
+            }
 		}
 
 		/// <summary>Dumps the MIDI track to the writer in human-readable form.</summary>

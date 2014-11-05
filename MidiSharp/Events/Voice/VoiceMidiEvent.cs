@@ -46,7 +46,7 @@ namespace MidiSharp.Events.Voice
         /// <summary>Gets the status identifier (0x0 through 0xF) for this voice event.</summary>
         public byte Category { get { return m_category; } }
         /// <summary>Gets or sets the channel (0x0 through 0xF) for this voice event.</summary>
-        public virtual byte Channel
+        public byte Channel
         {
             get { return m_channel; }
             set { Validate.SetIfInRange("Channel", ref m_channel, value, 0x0, 0xF); }

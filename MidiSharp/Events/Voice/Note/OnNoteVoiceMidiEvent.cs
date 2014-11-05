@@ -33,7 +33,7 @@ namespace MidiSharp.Events.Voice.Note
         /// <param name="velocity">The velocity of the note (0x0 to 0x7F).</param>
         /// <remarks>Channel 10 (internally 0x9) is assumed.</remarks>
         public OnNoteVoiceMidiEvent(long deltaTime, GeneralMidiPercussion percussion, byte velocity) :
-            this(deltaTime, (byte)SpecialChannels.Percussion, GetNoteValue(percussion), velocity)
+            this(deltaTime, (byte)SpecialChannel.Percussion, GetNoteValue(percussion), velocity)
         {
         }
 

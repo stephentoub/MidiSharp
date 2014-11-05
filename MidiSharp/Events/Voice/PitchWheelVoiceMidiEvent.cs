@@ -23,7 +23,7 @@ namespace MidiSharp.Events.Voice
         /// <param name="deltaTime">The delta-time since the previous message.</param>
         /// <param name="channel">The channel to which to write the message (0 through 15).</param>
         /// <param name="steps">The amount of pitch change to apply.</param>
-        public PitchWheelVoiceMidiEvent(long deltaTime, byte channel, PitchWheelSteps steps) :
+        public PitchWheelVoiceMidiEvent(long deltaTime, byte channel, PitchWheelStep steps) :
             this(deltaTime, channel, (int)steps)
         {
         }

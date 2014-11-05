@@ -34,7 +34,7 @@ namespace MidiSharp.Events.Voice.Note
             return string.Format(CultureInfo.InvariantCulture,
                 "{0}\t{1}",
                 base.ToString(),
-                Channel == (byte)SpecialChannels.Percussion && Enum.IsDefined(typeof(GeneralMidiPercussion), m_note) ?
+                Channel == (byte)SpecialChannel.Percussion && Enum.IsDefined(typeof(GeneralMidiPercussion), m_note) ?
                     ((GeneralMidiPercussion)m_note).ToString() : GetNoteName(m_note));
         }
 
@@ -77,7 +77,7 @@ namespace MidiSharp.Events.Voice.Note
         public static MidiEvent[] Complete(
             long deltaTime, GeneralMidiPercussion percussion, byte velocity, long duration)
         {
-            return Complete(deltaTime, (byte)SpecialChannels.Percussion, GetNoteValue(percussion), velocity, duration);
+            return Complete(deltaTime, (byte)SpecialChannel.Percussion, GetNoteValue(percussion), velocity, duration);
         }
 
         /// <summary>Create a complete note (both on and off messages) with a specified duration.</summary>

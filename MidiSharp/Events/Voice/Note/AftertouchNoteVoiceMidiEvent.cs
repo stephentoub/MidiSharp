@@ -34,7 +34,7 @@ namespace MidiSharp.Events.Voice.Note
         /// <param name="pressure">The pressure of the note (0x0 to 0x7F).</param>
         /// <remarks>Channel 10 (internally 0x9) is assumed.</remarks>
         public AftertouchNoteVoiceMidiEvent(long deltaTime, GeneralMidiPercussion percussion, byte pressure) :
-            this(deltaTime, (byte)SpecialChannels.Percussion, GetNoteValue(percussion), pressure)
+            this(deltaTime, (byte)SpecialChannel.Percussion, GetNoteValue(percussion), pressure)
         {
         }
 
