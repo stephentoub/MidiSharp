@@ -19,7 +19,7 @@ namespace MidiSharp.Events
 
 		/// <summary>Initialize the event.</summary>
 		/// <param name="deltaTime">The amount of time before this event.</param>
-		protected MidiEvent(long deltaTime)
+		internal MidiEvent(long deltaTime)
 		{
 			// Store the data
 			DeltaTime = deltaTime;

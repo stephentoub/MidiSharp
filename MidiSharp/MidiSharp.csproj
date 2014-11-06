@@ -41,6 +41,7 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeGeneration\CSharpCodeGenerator.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="DivisionType.cs" />
     <Compile Include="Events\Meta\ChannelPrefixMetaMidiEvent.cs" />
@@ -88,7 +89,7 @@
     <Compile Include="MidiSequence.cs" />
     <Compile Include="MidiSequenceExtensions.cs" />
     <Compile Include="MidiTrack.cs" />
-    <Compile Include="PitchWheelSteps.cs" />
+    <Compile Include="PitchWheelStep.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpecialChannels.cs" />
     <Compile Include="Tonality.cs" />

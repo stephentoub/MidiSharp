@@ -21,7 +21,7 @@ namespace MidiSharp.Events.Voice
         /// <param name="deltaTime">The amount of time before this event.</param>
         /// <param name="category">The category identifier (0x0 through 0xF) for this voice event.</param>
         /// <param name="channel">The channel (0x0 through 0xF) for this voice event.</param>
-        protected VoiceMidiEvent(long deltaTime, byte category, byte channel)
+        internal VoiceMidiEvent(long deltaTime, byte category, byte channel)
             : base(deltaTime)
         {
             Validate.SetIfInRange("category", ref m_category, category, 0x0, 0xF);
@@ -56,8 +56,8 @@ namespace MidiSharp.Events.Voice
         /// <summary>Gets the Dword that represents this event as a MIDI event message.</summary>
         internal int Message { get { return Status | (Parameter1 << 8) | (Parameter2 << 16); } }
         /// <summary>The first parameter as sent in the MIDI message.</summary>
-        protected abstract byte Parameter1 { get; }
+        internal abstract byte Parameter1 { get; }
         /// <summary>The second parameter as sent in the MIDI message.</summary>
-        protected abstract byte Parameter2 { get; }
+        internal abstract byte Parameter2 { get; }
     }
 }

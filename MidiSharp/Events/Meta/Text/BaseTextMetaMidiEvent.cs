@@ -20,7 +20,7 @@ namespace MidiSharp.Events.Meta.Text
         /// <param name="deltaTime">The amount of time before this event.</param>
         /// <param name="metaEventID">The ID of the meta event.</param>
         /// <param name="text">The text associated with the event.</param>
-        protected BaseTextMetaMidiEvent(long deltaTime, byte metaEventID, string text) :
+        internal BaseTextMetaMidiEvent(long deltaTime, byte metaEventID, string text) :
             base(deltaTime, metaEventID)
         {
             m_text = text;

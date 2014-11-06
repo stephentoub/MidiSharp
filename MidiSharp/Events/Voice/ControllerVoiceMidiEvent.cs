@@ -78,10 +78,10 @@ namespace MidiSharp.Events.Voice
         }
 
         /// <summary>The first parameter as sent in the MIDI message.</summary>
-        protected override byte Parameter1 { get { return m_number; } }
+        internal override byte Parameter1 { get { return m_number; } }
 
         /// <summary>The second parameter as sent in the MIDI message.</summary>
-        protected override byte Parameter2 { get { return m_value; } }
+        internal override byte Parameter2 { get { return m_value; } }
 
         /// <summary>Creates a deep copy of the MIDI event.</summary>
         /// <returns>A deep clone of the MIDI event.</returns>

@@ -19,7 +19,7 @@ namespace MidiSharp.Events.Meta
         /// <summary>Intializes the meta MIDI event.</summary>
         /// <param name="deltaTime">The amount of time before this event.</param>
         /// <param name="metaEventID">The ID of the meta event.</param>
-        protected MetaMidiEvent(long deltaTime, byte metaEventID)
+        internal MetaMidiEvent(long deltaTime, byte metaEventID)
             : base(deltaTime)
         {
             m_metaEventID = metaEventID;

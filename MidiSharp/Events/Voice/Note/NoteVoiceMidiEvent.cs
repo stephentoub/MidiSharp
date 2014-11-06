@@ -21,7 +21,7 @@ namespace MidiSharp.Events.Voice.Note
         /// <param name="category">The category identifier (0x0 through 0xF) for this voice event.</param>
         /// <param name="channel">The channel (0x0 through 0xF) for this voice event.</param>
         /// <param name="note">The MIDI note to modify (0x0 to 0x7F).</param>
-        protected NoteVoiceMidiEvent(long deltaTime, byte category, byte channel, byte note) :
+        internal NoteVoiceMidiEvent(long deltaTime, byte category, byte channel, byte note) :
             base(deltaTime, category, channel)
         {
             Note = note;
@@ -54,7 +54,7 @@ namespace MidiSharp.Events.Voice.Note
         }
 
         /// <summary>The first parameter as sent in the MIDI message.</summary>
-        protected sealed override byte Parameter1 { get { return m_note; } }
+        internal sealed override byte Parameter1 { get { return m_note; } }
 
         /// <summary>Create a complete note (both on and off messages).</summary>
         /// <param name="deltaTime">The amount of time before this event.</param>
