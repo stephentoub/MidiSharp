@@ -102,7 +102,7 @@ namespace MidiSharp.CodeGeneration
             {
                 string eventName = ev.GetType().Name;
                 string eventParams =
-                    Case<BaseTextMetaMidiEvent>(ev, e => Commas(e.DeltaTime, VerbatimString(e.Text))) ??
+                    Case<BaseTextMetaMidiEvent>(ev, e => Commas(e.DeltaTime, TextString(e.Text))) ??
                     Case<NoteVoiceMidiEvent>(ev, e =>
                         e.Channel == (byte)SpecialChannel.Percussion && Enum.IsDefined(typeof(GeneralMidiPercussion), e.Note) ?
                             Commas(e.DeltaTime, "GeneralMidiPercussion." + (GeneralMidiPercussion)e.Note, e.Parameter2) :
@@ -132,73 +132,9 @@ namespace MidiSharp.CodeGeneration
                 Ln(EventsListName, ".Add(new ", eventName, "(", eventParams, "));");
             }
 
-            /// <summary>
-            /// Checks whether the specified MidiEvent is of the specified type.
-            /// If it is the func is evaluated and its resulting string is returned.
-            /// Otherwise, returns null.
-            /// </summary>
-            /// <typeparam name="T">Specifies the type of the event desired.</typeparam>
-            /// <param name="ev">The event to process.</param>
-            /// <param name="func">The function to execute with the event if the event is of the specified type.</param>
-            /// <returns>The result of running the function over the event if the event is of the right type; otherwise, null.</returns>
-            string Case<T>(MidiEvent ev, Func<T, string> func) where T : MidiEvent
-            {
-                T castEvent = ev as T;
-                return castEvent != null ? func(castEvent) : null;
-            }
-
-            /// <summary>Create a string of C# code for creating a byte array containing the specified data.</summary>
-            /// <param name="data">The array of data.</param>
-            /// <returns>A string of C# code for allocating a byte array containing the specified data.</returns>
-            static string ByteArrayCreationString(byte[] data)
-            {
-                var sb = new StringBuilder();
-                sb.AppendFormat(CultureInfo.InvariantCulture, "new byte[{0}]{{", data.Length);
-                for (int i = 0; i < data.Length; i++) {
-                    sb.AppendFormat(CultureInfo.InvariantCulture, "{0}{1}", i > 0 ? "," : "", data[i]);
-                }
-                sb.Append("}");
-                return sb.ToString();
-            }
-
-            /// <summary>Create a verbatim C# string from text.</summary>
-            /// <param name="text">The text to output verbatim.  There might be minor variations made to the text to make it suitable for a C# program.</param>
-            /// <returns>The text put into a verbatim string.</returns>
-            static string VerbatimString(string text)
-            {
-                if (text == null) {
-                    text = string.Empty;
-                }
-                
-                // Normalize new lines to be carriage returns + line feeds
-                if (text.IndexOf('\r') >= 0 || text.IndexOf('\n') >= 0) {
-                    text = text.Replace("\r\n", "\r").Replace('\n', '\r').Replace("\r", "\r\n");
-                }
-
-                // Escape quotes that would end the verbatim string. " => ""
-                if (text.IndexOf('\"') >= 0) {
-                    text = text.Replace("\"", "\"\"");
-                }
-
-                // Return the text in a verbatim string @"...@
-                return "@\"" + text + "\"";
-            }
-
-            /// <summary>Creates a string of the specified parts comma-separated.</summary>
-            /// <param name="values">The parts to process.</param>
-            /// <returns>The comma-delimited string of values.</returns>
-            static string Commas(params object[] values)
-            {
-                Validate.NonNull("values", values);
-                return 
-                    values.Length == 0 ? string.Empty :
-                    values.Length == 1 ? values[0] as string ?? string.Format(CultureInfo.InvariantCulture, "{0}", values[0]) :
-                    string.Join(", ", values.Select(o => string.Format(CultureInfo.InvariantCulture, "{0}", o)));
-            }
-
             /// <summary>Writes to the writer a line with each of the values, prefixed with the current indentation.</summary>
             /// <param name="values">The values to write.</param>
-            void Ln(params object[] values)
+            private void Ln(params object[] values)
             {
                 if (m_indentationLevel > 0) {
                     m_writer.Write(string.Concat(Enumerable.Repeat("    ", m_indentationLevel)));
@@ -214,7 +150,7 @@ namespace MidiSharp.CodeGeneration
             /// When the returned IDisposable is disposed, a line with a closing brace will be output and the indentation level decreased.
             /// </summary>
             /// <returns>An IDisposable that will output a closing brace and decrease the indentation level.</returns>
-            EndBrace Braces()
+            private EndBrace Braces()
             {
                 Ln("{");
                 m_indentationLevel++;
@@ -222,7 +158,7 @@ namespace MidiSharp.CodeGeneration
             }
 
             /// <summary>An IDisposable that, when disposed, will decrease the indentation level and output a closing brace.</summary>
-            struct EndBrace : IDisposable
+            private struct EndBrace : IDisposable
             {
                 internal Generator Parent;
                 public void Dispose()
@@ -230,6 +166,88 @@ namespace MidiSharp.CodeGeneration
                     Parent.m_indentationLevel--;
                     Parent.Ln("}");
                 }
+            }
+
+            /// <summary>
+            /// Checks whether the specified MidiEvent is of the specified type.
+            /// If it is the func is evaluated and its resulting string is returned.
+            /// Otherwise, returns null.
+            /// </summary>
+            /// <typeparam name="T">Specifies the type of the event desired.</typeparam>
+            /// <param name="ev">The event to process.</param>
+            /// <param name="func">The function to execute with the event if the event is of the specified type.</param>
+            /// <returns>The result of running the function over the event if the event is of the right type; otherwise, null.</returns>
+            private static string Case<T>(MidiEvent ev, Func<T, string> func) where T : MidiEvent
+            {
+                T castEvent = ev as T;
+                return castEvent != null ? func(castEvent) : null;
+            }
+
+            /// <summary>Create a string of C# code for creating a byte array containing the specified data.</summary>
+            /// <param name="data">The array of data.</param>
+            /// <returns>A string of C# code for allocating a byte array containing the specified data.</returns>
+            private static string ByteArrayCreationString(byte[] data)
+            {
+                var sb = new StringBuilder();
+                sb.AppendFormat(CultureInfo.InvariantCulture, "new byte[{0}]{{", data.Length);
+                for (int i = 0; i < data.Length; i++) {
+                    sb.AppendFormat(CultureInfo.InvariantCulture, "{0}{1}", i > 0 ? "," : "", data[i]);
+                }
+                sb.Append("}");
+                return sb.ToString();
+            }
+
+            [ThreadStatic]
+            private static StringBuilder s_cachedBuilder;
+
+            /// <summary>
+            /// Create a C# string from text, escaping some characters as unicode to make sure it renders reasonably in the C# code while
+            /// still resulting in the same output string.
+            /// </summary>
+            /// <param name="text">The text to output.</param>
+            /// <returns>The text put into a string.</returns>
+            private static string TextString(string text)
+            {
+                bool acceptable = true;
+                foreach (char c in text) {
+                    if (Char.IsWhiteSpace(c) && c != ' ') {
+                        acceptable = false;
+                        break;
+                    }
+                }
+                if (acceptable) {
+                    return "\"" + text + "\"";
+                }
+
+                StringBuilder sb = s_cachedBuilder;
+                if (sb == null) {
+                    s_cachedBuilder = sb = new StringBuilder(text.Length * 2);
+                }
+                sb.Append('\"');
+                foreach (char c in text) {
+                    if (!Char.IsWhiteSpace(c) || c == ' ') {
+                        sb.Append(c);
+                    }
+                    else {
+                        sb.AppendFormat(CultureInfo.InvariantCulture, "\\u{0:X4}", (int)c);
+                    }
+                }
+                sb.Append('\"');
+                string result = sb.ToString();
+                sb.Clear();
+                return result;
+            }
+
+            /// <summary>Creates a string of the specified parts comma-separated.</summary>
+            /// <param name="values">The parts to process.</param>
+            /// <returns>The comma-delimited string of values.</returns>
+            private static string Commas(params object[] values)
+            {
+                Validate.NonNull("values", values);
+                return 
+                    values.Length == 0 ? string.Empty :
+                    values.Length == 1 ? values[0] as string ?? string.Format(CultureInfo.InvariantCulture, "{0}", values[0]) :
+                    string.Join(", ", values.Select(o => string.Format(CultureInfo.InvariantCulture, "{0}", o)));
             }
         }
     }
