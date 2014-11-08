@@ -28,10 +28,10 @@ namespace MidiSharp
             bool sysExContinue = false; // whether we're in a multi-segment system exclusive message
             byte[] sysExData = null; // system exclusive data up to this point from a multi-segment message
 
-            try {
-                // Create the new track
-                MidiTrack track = new MidiTrack();
+            // Create the new track
+            MidiTrack track = new MidiTrack();
 
+            try {
                 // Process all bytes, turning them into events
                 while (pos < data.Length) {
                     // Read in the delta time
@@ -41,7 +41,7 @@ namespace MidiSharp
                     byte nextValue = data[pos];
 
                     // Are we continuing a sys ex?  If so, the next value better be 0x7F
-                    if (sysExContinue && (nextValue != 0x7f)) {
+                    if (sysExContinue && (nextValue != 0x7F)) {
                         var mpe = new MidiParserException("Expected to find a system exclusive continue byte.", pos);
                         mpe.Data["nextValue"] = nextValue;
                         throw mpe;
@@ -371,11 +371,11 @@ namespace MidiSharp
             // If the special "there's more data" marker isn't set, we're done
             if ((data[pos] & 0x80) != 0) {
                 // Remove the special marker
-                length &= 0x7f;
+                length &= 0x7F;
                 do {
                     // Continually get all bytes, removing the marker, until no marker is found
                     pos++;
-                    length = (length << 7) + (data[pos] & 0x7f);
+                    length = (length << 7) + (data[pos] & 0x7F);
                 }
                 while (pos < data.Length && ((data[pos] & 0x80) != 0));
             }

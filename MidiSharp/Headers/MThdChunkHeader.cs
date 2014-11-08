@@ -12,6 +12,11 @@ namespace MidiSharp.Headers
     /// <summary>"MThd" header for writing out MIDI files.</summary>
     internal struct MThdChunkHeader
     {
+        /// <summary>The id for an MThd header.</summary>
+        private static readonly byte[] s_mThdID = new byte[] { 0x4d, 0x54, 0x68, 0x64 }; // 0x4d546864 = "MThd"
+        /// <summary>Expected length of the MThdHeader. 2 bytes for each of the format, num tracks, and division.</summary>
+        const int MThdHeaderLength = 6;
+
         /// <summary>Additional chunk header data.</summary>
         private readonly ChunkHeader m_header;
         /// <summary>The format for the MIDI file (0, 1, or 2).</summary>
@@ -42,9 +47,7 @@ namespace MidiSharp.Headers
             Validate.InRange("numTracks", numTracks, 1, int.MaxValue);
             Validate.InRange("division", division, 1, int.MaxValue);
 
-            m_header = new ChunkHeader(
-                MThdID, // 0x4d546864 = "MThd"
-                6);	// 2 bytes for each of the format, num tracks, and division == 6
+            m_header = new ChunkHeader(s_mThdID, 6);
             m_format = format;
             m_numTracks = numTracks;
             m_division = division;
@@ -56,18 +59,21 @@ namespace MidiSharp.Headers
         public int NumberOfTracks { get { return m_numTracks; } }
         /// <summary>Gets the meaning of the delta-times</summary>
         public int Division { get { return m_division; } }
-        /// <summary>Gets the id for an MThd header.</summary>
-        private static byte[] MThdID { get { return new byte[] { 0x4d, 0x54, 0x68, 0x64 }; } }
 
         /// <summary>Validates that a header is correct as an MThd header.</summary>
         /// <param name="header">The header to be validated.</param>
         private static void ValidateHeader(ChunkHeader header)
         {
-            byte[] validHeader = MThdID;
+            Validate.NonNull("header.ID", header.ID);
+
             for (int i = 0; i < 4; i++) {
-                if (header.ID[i] != validHeader[i]) throw new InvalidOperationException("Invalid MThd header.");
+                if (header.ID[i] != s_mThdID[i]) {
+                    throw new InvalidOperationException("Invalid MThd header.");
+                }
             }
-            if (header.Length != 6) throw new InvalidOperationException("The length of the MThd header is incorrect.");
+            if (header.Length != MThdHeaderLength) {
+                throw new InvalidOperationException("The length of the MThd header is incorrect.");
+            }
         }
 
         /// <summary>Writes the MThd header out to the stream.</summary>
@@ -79,17 +85,10 @@ namespace MidiSharp.Headers
             // Write out the main header
             m_header.Write(outputStream);
 
-            // Add format
-            outputStream.WriteByte((byte)(((int)m_format & 0xFF00) >> 8));
-            outputStream.WriteByte((byte)((int)m_format & 0x00FF));
-
-            // Add numTracks
-            outputStream.WriteByte((byte)((m_numTracks & 0xFF00) >> 8));
-            outputStream.WriteByte((byte)(m_numTracks & 0x00FF));
-
-            // Add division
-            outputStream.WriteByte((byte)((m_division & 0xFF00) >> 8));
-            outputStream.WriteByte((byte)(m_division & 0x00FF));
+            // Add format, numTracks, and division
+            WriteTwoByteValue(outputStream, (int)m_format);
+            WriteTwoByteValue(outputStream, m_numTracks);
+            WriteTwoByteValue(outputStream, m_division);
         }
 
         /// <summary>Read in an MThd chunk from the stream.</summary>
@@ -100,38 +99,26 @@ namespace MidiSharp.Headers
             Validate.NonNull("inputStream", inputStream);
 
             // Read in a header from the stream and validate it
-            ChunkHeader header = ChunkHeader.Read(inputStream);
-            ValidateHeader(header);
+            ValidateHeader(ChunkHeader.Read(inputStream));
 
-            // Read in the format
-            int format = 0;
-            for (int i = 0; i < 2; i++) {
-                int val = inputStream.ReadByte();
-                if (val < 0) throw new InvalidOperationException("The stream is invalid.");
-                format <<= 8;
-                format |= val;
-            }
-
-            // Read in the number of tracks
-            int numTracks = 0;
-            for (int i = 0; i < 2; i++) {
-                int val = inputStream.ReadByte();
-                if (val < 0) throw new InvalidOperationException("The stream is invalid.");
-                numTracks <<= 8;
-                numTracks |= val;
-            }
-
-            // Read in the division
-            int division = 0;
-            for (int i = 0; i < 2; i++) {
-                int val = inputStream.ReadByte();
-                if (val < 0) throw new InvalidOperationException("The stream is invalid.");
-                division <<= 8;
-                division |= val;
-            }
+            // Read in the format, number of tracks, and the division, each a two-byte value
+            int format = ReadTwoByteValue(inputStream);
+            int numTracks = ReadTwoByteValue(inputStream);
+            int division = ReadTwoByteValue(inputStream);
 
             // Create a new MThd header and return it
             return new MThdChunkHeader((Format)format, numTracks, division);
+        }
+
+        private static int ReadTwoByteValue(Stream stream)
+        {
+            return (Validate.NonNegative(stream.ReadByte()) << 8) | Validate.NonNegative(stream.ReadByte());
+        }
+
+        private static void WriteTwoByteValue(Stream stream, int value)
+        {
+            stream.WriteByte((byte)((value & 0xFF00) >> 8));
+            stream.WriteByte((byte)(value & 0x00FF));
         }
     }
 }

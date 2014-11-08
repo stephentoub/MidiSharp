@@ -22,6 +22,11 @@ namespace MidiSharp
         {
             throw new ArgumentNullException(parameterName);
         }
+
+        internal static void ThrowNonNegativeInvalidData()
+        {
+            throw new InvalidOperationException("A zero or positive value was expected.");
+        }
         #endregion
 
         #region InRange
@@ -76,6 +81,16 @@ namespace MidiSharp
         {
             NonNull(parameterName, input);
             target = input;
+        }
+        #endregion
+
+        #region NonNegative
+        public static int NonNegative(int value)
+        {
+            if (value < 0) {
+                ThrowNonNegativeInvalidData();
+            }
+            return value;
         }
         #endregion
     }

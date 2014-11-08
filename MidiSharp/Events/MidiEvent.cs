@@ -68,20 +68,21 @@ namespace MidiSharp.Events
 
 			// Parse the value into bytes containing each set of 7-bits and a 1-bit marker
 			// for whether there are more bytes in the length
-			buffer = value & 0x7f;
+			buffer = value & 0x7F;
 			while ((value >>= 7) > 0) 
 			{
-				buffer <<= 8;
-				buffer |= 0x80;
-				buffer += (value & 0x7f);
+                buffer = (buffer << 8) | 0x80;
+                buffer += value & 0x7F;
 			}
 
-			// Get all of the bytes in correct order
-			while(true)
+			// Write all of the bytes in correct order
+			while (true)
 			{
 				outputStream.WriteByte((byte)(buffer & 0xFF));
-				if ((buffer & 0x80) == 0) break; // if the marker bit is not set, we're done
-				buffer >>= 8;
+                if ((buffer & 0x80) == 0) {
+                    break; // if the marker bit is not set, we're done
+                }
+                buffer >>= 8;
 			}
 		}
 

@@ -65,15 +65,14 @@ namespace MidiSharp.Headers
 
             // Read the id
             byte[] id = new byte[4];
-            if (inputStream.Read(id, 0, id.Length) != id.Length) throw new InvalidOperationException("The stream is invalid.");
+            if (inputStream.Read(id, 0, id.Length) != id.Length) {
+                throw new InvalidOperationException("The stream is invalid.");
+            }
 
             // Read the length
             long length = 0;
             for (int i = 0; i < 4; i++) {
-                int val = inputStream.ReadByte();
-                if (val < 0) throw new InvalidOperationException("The stream is invalid.");
-                length <<= 8;
-                length |= (byte)val;
+                length = (length << 8) | (byte)Validate.NonNegative(inputStream.ReadByte());
             }
 
             // Create a new header with the read data
