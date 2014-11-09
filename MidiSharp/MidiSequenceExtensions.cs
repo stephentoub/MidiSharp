@@ -16,6 +16,17 @@ namespace MidiSharp
     /// <summary>Common manipulations of MidiSequences.</summary>
     public static class MidiSequenceExtensions
     {
+        /// <summary>Adds a new, empty track to the sequence.</summary>
+        /// <param name="sequence">The sequence to which the track should be added.</param>
+        /// <returns>The new track.</returns>
+        public static MidiTrack AddTrack(this MidiSequence sequence)
+        {
+            Validate.NonNull("sequence", sequence);
+            MidiTrack track = new MidiTrack();
+            sequence.Tracks.Add(track);
+            return track;
+        }
+
         /// <summary>Transposes a MIDI sequence up/down the specified number of half-steps.</summary>
         /// <param name="sequence">The sequence to be transposed.</param>
         /// <param name="steps">The number of steps up(+) or down(-) to transpose the sequence.</param>
@@ -121,13 +132,13 @@ namespace MidiSharp
                 // No transformation is necessary.
                 sequence = new MidiSequence(sequence);
             }
-            else if (format != Format.Zero || sequence.TrackCount == 1) {
+            else if (format != Format.Zero || sequence.Tracks.Count == 1) {
                 // If the desired format is is not 0 or there's only one track, just copy the sequence with a different format number.
                 // If it's not zero, then multiple tracks are acceptable, so no transformation is necessary.
                 // Or if there's only one track, then there's no possible transformation to be done.
                 var newSequence = new MidiSequence(format, sequence.Division);
                 foreach (MidiTrack t in sequence) {
-                    newSequence.AddTrack(new MidiTrack(t));
+                    newSequence.Tracks.Add(new MidiTrack(t));
                 }
                 sequence = newSequence;
             }
@@ -171,8 +182,8 @@ namespace MidiSharp
 
                 // We now have all of the combined events in newTrack.  Clear out the sequence, replacing all the tracks
                 // with this new one.
-                sequence.ClearTracks();
-                sequence.AddTrack(newTrack);
+                sequence.Tracks.Clear();
+                sequence.Tracks.Add(newTrack);
             }
 
             return sequence;

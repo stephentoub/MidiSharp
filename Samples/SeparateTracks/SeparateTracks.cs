@@ -32,9 +32,9 @@ namespace SeparateTracks
                     sequence = MidiSequence.Open(inputStream);
                 }
 
-                for (int i = 0; i < sequence.TrackCount; i++) {
+                for (int i = 0; i < sequence.Tracks.Count; i++) {
                     MidiSequence newSequence = new MidiSequence(Format.Zero, sequence.Division);
-                    newSequence.AddTrack(sequence[i]);
+                    newSequence.Tracks.Add(sequence.Tracks[i]);
                     using (Stream outputStream = File.OpenWrite(args[0] + "." + i + ".mid")) {
                         newSequence.Save(outputStream);
                     }

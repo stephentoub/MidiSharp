@@ -15,15 +15,15 @@ using System.IO;
 namespace MidiSharp
 {
 	/// <summary>Represents a MIDI sequence containing tracks of MIDI data.</summary>
-    [DebuggerDisplay("Format = {Format}, Division = {Division}, Tracks = {TrackCount}")]
-	public class MidiSequence : IEnumerable<MidiTrack>
+    [DebuggerDisplay("Format = {Format}, Division = {Division}, Tracks = {Tracks.Count}")]
+	public sealed class MidiSequence : IEnumerable<MidiTrack>
 	{
 		/// <summary>The format of the MIDI file (0, 1, or 2).</summary>
 		private Format m_format;
 		/// <summary>The meaning of delta-times.</summary>
 		private int m_division;
 		/// <summary>The tracks in the MIDI sequence.</summary>
-		private readonly List<MidiTrack> m_tracks;
+		private readonly MidiTrackCollection m_tracks;
 
         /// <summary>Initialize the MIDI sequence with default values for format and division.</summary>
         public MidiSequence() : this(Format.Zero, 480)
@@ -40,19 +40,23 @@ namespace MidiSharp
 		/// <param name="division">The meaning of the delta-times in the file.</param>
 		public MidiSequence(Format format, int division)
 		{
-			// Store values
 			Format = format;
 			Division = division;
-			m_tracks = new List<MidiTrack>();
+            m_tracks = new MidiTrackCollection(this);
 		}
 
         /// <summary>Initialize the MIDI sequence with a copy of the data from another sequence.</summary>
         /// <param name="source">The source sequence from which to copy.</param>
-        public MidiSequence(MidiSequence source) : this(source.Format, source.Division)
+        public MidiSequence(MidiSequence source)
         {
             Validate.NonNull("source", source);
+            
+            Format = source.Format;
+            Division = source.Division;
+            m_tracks = new MidiTrackCollection(this);
+
             foreach (MidiTrack t in source) {
-                AddTrack(new MidiTrack(t));
+                m_tracks.Add(new MidiTrack(t));
             }
         }
 
@@ -104,65 +108,8 @@ namespace MidiSharp
             }
         }
 
-		/// <summary>Gets the number of tracks in the sequence.</summary>
-		public int TrackCount { get { return m_tracks.Count; } }
-
-		/// <summary>Adds a track to the MIDI sequence.</summary>
-		/// <returns>The new track as added to the sequence.  Modifications made to the track will be reflected in the sequence.</returns>
-		public MidiTrack AddTrack()
-		{
-			// Create a new track, add it, and return it
-			MidiTrack track = new MidiTrack();
-			AddTrack(track);
-			return track;
-		}
-
-		/// <summary>Adds a track to the MIDI sequence.</summary>
-		/// <param name="track">The complete track to be added.</param>
-		public void AddTrack(MidiTrack track)
-		{
-			// Make sure the track is valid and that is hasn't already been added.
-            Validate.NonNull("track", track);
-            if (m_tracks.Contains(track)) {
-                throw new ArgumentException("This track is already part of the sequence.");
-            }
-
-			// If this is format 0, we can only have 1 track
-            if (m_format == Format.Zero && m_tracks.Count >= 1) {
-                throw new InvalidOperationException("Format 0 MIDI files can only have 1 track.");
-            }
-
-			// Add the track.
-			m_tracks.Add(track);
-		}
-
-		/// <summary>Removes a track that has been adding to the MIDI sequence.</summary>
-		/// <param name="track">The track to be removed.</param>
-		public void RemoveTrack(MidiTrack track)
-		{
-			// Remove the track
-			m_tracks.Remove(track);
-		}
-
-		/// <summary>Gets or sets the track at the specified index.</summary>
-		public MidiTrack this[int index]
-		{
-			get { return m_tracks[index]; }
-			set { m_tracks[index] = value; }
-		}
-
-		/// <summary>Gets the tracks that have been added to the sequence.</summary>
-		/// <returns>An array of all tracks that have been added to the sequence.</returns>
-		public MidiTrack[] GetTracks()
-		{
-			return m_tracks.ToArray();
-		}
-
-        /// <summary>Removes all tracks from the sequence.</summary>
-        public void ClearTracks()
-        {
-            m_tracks.Clear();
-        }
+        /// <summary>Gets the collection of tracks in this sequence.</summary>
+        public MidiTrackCollection Tracks { get { return m_tracks; } }
 
 		/// <summary>Gets an enumerator for the tracks in the sequence.</summary>
 		/// <returns>An enumerator for the tracks in the sequence.</returns>
@@ -259,7 +206,7 @@ namespace MidiSharp
 			MidiSequence sequence = new MidiSequence(mainHeader.Format, mainHeader.Division);
 			for(int i=0; i<mainHeader.NumberOfTracks; i++)
 			{
-				sequence.AddTrack(MidiParser.ParseToTrack(trackChunks[i].Data));
+				sequence.Tracks.Add(MidiParser.ParseToTrack(trackChunks[i].Data));
 			}
 			return sequence;
 		}

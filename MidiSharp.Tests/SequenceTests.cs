@@ -87,10 +87,10 @@ namespace MidiSharp.Tests
             Assert.AreEqual(sequence1.Format, sequence2.Format);
             Assert.AreEqual(sequence1.Division, sequence2.Division);
             Assert.AreEqual(sequence1.DivisionType, sequence2.DivisionType);
-            Assert.AreEqual(sequence1.TrackCount, sequence2.TrackCount);
+            Assert.AreEqual(sequence1.Tracks.Count, sequence2.Tracks.Count);
 
-            for (int i = 0; i < sequence1.TrackCount; i++) {
-                AssertAreEqual(sequence1[i], sequence2[i]);
+            for (int i = 0; i < sequence1.Tracks.Count; i++) {
+                AssertAreEqual(sequence1.Tracks[i], sequence2.Tracks[i]);
             }
         }
 

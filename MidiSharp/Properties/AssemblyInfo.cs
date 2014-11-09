@@ -11,7 +11,7 @@ using System.Resources;
 [assembly: AssemblyDescription("Library for reading, writing, and manipulating MIDI (*.mid) files.")]
 [assembly: AssemblyProduct("MidiSharp")]
 [assembly: NeutralResourcesLanguage("en")]
-[assembly: AssemblyVersion("1.0.*")]
+[assembly: AssemblyVersion("0.9.*")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
 [assembly: AssemblyConfiguration("")]

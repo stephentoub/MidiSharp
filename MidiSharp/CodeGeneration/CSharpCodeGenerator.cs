@@ -73,13 +73,13 @@ namespace MidiSharp.CodeGeneration
                         Ln("public static MidiSequence CreateSequence()");
                         using (Braces()) {
                             Ln("MidiSequence sequence = new MidiSequence(MidiSharp.Format.", sequence.Format, ", ", sequence.Division, ");");
-                            for (int i = 0; i < sequence.TrackCount; i++) {
+                            for (int i = 0; i < sequence.Tracks.Count; i++) {
                                 Ln("sequence.AddTrack(CreateTrack", i, "());");
                             }
                             Ln("return sequence;");
                         }
                         Ln();
-                        for (int i = 0; i < sequence.TrackCount; i++) {
+                        for (int i = 0; i < sequence.Tracks.Count; i++) {
                             if (i != 0) {
                                 Ln();
                             }
@@ -88,7 +88,7 @@ namespace MidiSharp.CodeGeneration
                             using (Braces()) {
                                 Ln("MidiTrack track = new MidiTrack();");
                                 Ln("List<MidiEvent> ", EventsListName, " = track.Events;");
-                                foreach (MidiEvent ev in sequence[i].Events) {
+                                foreach (MidiEvent ev in sequence.Tracks[i].Events) {
                                     GenerateAddEvent(ev);
                                 }
                                 Ln("return track;");

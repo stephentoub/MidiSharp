@@ -9,6 +9,7 @@ using MidiSharp.Events.Meta;
 using MidiSharp.Events.Meta.Text;
 using MidiSharp.Headers;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -18,10 +19,10 @@ namespace MidiSharp
 {
 	/// <summary>Represents a single MIDI track in a MIDI file.</summary>
     [DebuggerDisplay("Name = {TrackName}")]
-	public class MidiTrack
+	public sealed class MidiTrack : IEnumerable<MidiEvent>
     {
         /// <summary>Collection of MIDI event added to this track.</summary>
-        private readonly List<MidiEvent> m_events;
+        private readonly MidiEventCollection m_events;
 		/// <summary>Whether the track can be written without an end of track marker.</summary>
 		private bool m_requireEndOfTrack;
 
@@ -29,7 +30,7 @@ namespace MidiSharp
 		public MidiTrack()
 		{
 			// Create the buffer to store all event information
-			m_events = new List<MidiEvent>();
+            m_events = new MidiEventCollection();
 
 			// We don't yet have an end of track marker, but we want one eventually.
 			m_requireEndOfTrack = true;
@@ -37,13 +38,12 @@ namespace MidiSharp
 
         /// <summary>Initializes the track with a copy of the data in another track.</summary>
         /// <returns>The track to copy.</returns>
-        public MidiTrack(MidiTrack source)
+        public MidiTrack(MidiTrack source) : this()
         {
-            m_events = new List<MidiEvent>();
+            m_requireEndOfTrack = source.RequireEndOfTrack;
             foreach (var e in source.Events) {
                 m_events.Add(e.DeepClone());
             }
-            m_requireEndOfTrack = source.RequireEndOfTrack;
         }
 
 		/// <summary>Gets whether an end of track event has been added.</summary>
@@ -66,7 +66,15 @@ namespace MidiSharp
         public bool RequireEndOfTrack { get { return m_requireEndOfTrack; } set { m_requireEndOfTrack = false; } }
 
 		/// <summary>Gets the collection of MIDI events that are a part of this track.</summary>
-		public List<MidiEvent> Events { get { return m_events; } }
+		public MidiEventCollection Events { get { return m_events; } }
+
+        /// <summary>Gets an enumerator for the tracks in the sequence.</summary>
+        /// <returns>An enumerator for the tracks in the sequence.</returns>
+        IEnumerator IEnumerable.GetEnumerator() { return Events.GetEnumerator(); }
+
+        /// <summary>Gets an enumerator for the tracks in the sequence.</summary>
+        /// <returns>An enumerator for the tracks in the sequence.</returns>
+        public IEnumerator<MidiEvent> GetEnumerator() { return Events.GetEnumerator(); }
 
 		/// <summary>Write the track to the output stream.</summary>
 		/// <param name="outputStream">The output stream to which the track should be written.</param>
