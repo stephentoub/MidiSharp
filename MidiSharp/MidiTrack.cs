@@ -112,7 +112,7 @@ namespace MidiSharp
 		}
 
         /// <summary>Gets the name of the track, based on finding the first track name event in the track, if one exists.</summary>
-        private string TrackName
+        internal string TrackName
         {
             get
             {
@@ -120,7 +120,7 @@ namespace MidiSharp
                     var nameEvent = ev as SequenceTrackNameTextMetaMidiEvent;
                     if (nameEvent != null) return nameEvent.Text;
                 }
-                return "{no name found}";
+                return null;
             }
         }
 	}

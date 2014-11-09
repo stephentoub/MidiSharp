@@ -54,6 +54,8 @@ namespace MidiSharp.CodeGeneration
             /// <param name="typeName">The type name to be used in the generated code.</param>
             public void Generate(MidiSequence sequence, string namespaceName, string typeName)
             {
+                string trackName = sequence.Select(t => t.TrackName).Where(s => s != null).FirstOrDefault();
+
                 Ln("using MidiSharp;");
                 Ln("using MidiSharp.Events;");
                 Ln("using MidiSharp.Events.Meta;");
@@ -64,7 +66,7 @@ namespace MidiSharp.CodeGeneration
                 Ln();
                 Ln("namespace ", namespaceName);
                 using (Braces()) {
-                    Ln("/// <summary>Provides a method for creating the ", typeName, " MIDI sequence.</summary>");
+                    Ln("/// <summary>Provides a method for creating the ", (trackName != null ? TextString(trackName) : typeName), " MIDI sequence.</summary>");
                     Ln("public class ", typeName);
                     using (Braces()) {
                         Ln("/// <summary>Creates the MIDI sequence.</summary>");
@@ -198,7 +200,7 @@ namespace MidiSharp.CodeGeneration
             }
 
             [ThreadStatic]
-            private static StringBuilder s_cachedBuilder;
+            private static StringBuilder t_cachedBuilder;
 
             /// <summary>
             /// Create a C# string from text, escaping some characters as unicode to make sure it renders reasonably in the C# code while
@@ -210,7 +212,7 @@ namespace MidiSharp.CodeGeneration
             {
                 bool acceptable = true;
                 foreach (char c in text) {
-                    if (Char.IsWhiteSpace(c) && c != ' ') {
+                    if (!IsValidInTextString(c)) {
                         acceptable = false;
                         break;
                     }
@@ -219,13 +221,10 @@ namespace MidiSharp.CodeGeneration
                     return "\"" + text + "\"";
                 }
 
-                StringBuilder sb = s_cachedBuilder;
-                if (sb == null) {
-                    s_cachedBuilder = sb = new StringBuilder(text.Length * 2);
-                }
+                StringBuilder sb = t_cachedBuilder ?? (t_cachedBuilder = new StringBuilder(text.Length * 2 + 2));
                 sb.Append('\"');
                 foreach (char c in text) {
-                    if (!Char.IsWhiteSpace(c) || c == ' ') {
+                    if (IsValidInTextString(c)) {
                         sb.Append(c);
                     }
                     else {
@@ -236,6 +235,22 @@ namespace MidiSharp.CodeGeneration
                 string result = sb.ToString();
                 sb.Clear();
                 return result;
+            }
+
+            /// <summary>
+            /// Gets whether a character is ok to render in a C# quoted string.
+            /// Letters and digits are ok.  A space is fine, but whitespace like new lines could
+            /// cause problems for a string, since it's not rendered as a verbatim string.
+            /// Punctuation is generally ok, but certainly punctuation has special meaning inside
+            /// a C# string and is not ok.
+            /// </summary>
+            /// <param name="c">The character to examine.</param>
+            /// <returns>true if the character is valid; otherwise, false.</returns>
+            private static bool IsValidInTextString(char c)
+            {
+                return
+                    Char.IsLetterOrDigit(c) || c == ' ' ||
+                    (Char.IsPunctuation(c) && c != '\\' && c != '\"' && c != '{');
             }
 
             /// <summary>Creates a string of the specified parts comma-separated.</summary>
