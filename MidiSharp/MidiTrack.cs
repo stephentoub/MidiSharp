@@ -18,7 +18,7 @@ using System.IO;
 namespace MidiSharp
 {
 	/// <summary>Represents a single MIDI track in a MIDI file.</summary>
-    [DebuggerDisplay("Name = {TrackName}")]
+    [DebuggerDisplay("Name = {TrackName}, Events = {Events.Count}")]
 	public sealed class MidiTrack : IEnumerable<MidiEvent>
     {
         /// <summary>Collection of MIDI event added to this track.</summary>
