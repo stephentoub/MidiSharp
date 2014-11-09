@@ -18,7 +18,7 @@ namespace TransposeMidi
         static void Main(string[] args)
         {
             if (args.Length != 2) {
-                Console.WriteLine("Usage: {0} filename.mid steps");
+                Console.WriteLine("Usage: TransposeMidi.exe filename.mid steps");
                 Console.WriteLine("    filename.mid = MIDI file to be transposed");
                 Console.WriteLine("    steps = Number of steps to transpose, positive or negative");
                 Console.WriteLine();

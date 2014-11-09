@@ -1,22 +1,21 @@
 ﻿//----------------------------------------------------------------------- 
-// <copyright file="GenerateMidiCode.cs" company="Stephen Toub"> 
+// <copyright file="SeparateTracks.cs" company="Stephen Toub"> 
 //     Copyright (c) Stephen Toub. All rights reserved. 
 // </copyright> 
 //----------------------------------------------------------------------- 
 
 using MidiSharp;
-using MidiSharp.CodeGeneration;
 using System;
 using System.IO;
 
-namespace GenerateMidiCode
+namespace SeparateTracks
 {
     class Program
     {
         static void Main(string[] args)
         {
             if (args.Length != 1) {
-                Console.WriteLine("Usage: GenerateMidiCode.exe filename.mid");
+                Console.WriteLine("Usage: SeparateTracks.exe filename.mid");
                 Console.WriteLine("    filename.mid = MIDI file for which to generate code");
                 Console.WriteLine();
                 return;
@@ -32,7 +31,14 @@ namespace GenerateMidiCode
                 using (Stream inputStream = File.OpenRead(args[0])) {
                     sequence = MidiSequence.Open(inputStream);
                 }
-                CSharpCodeGenerator.Write(sequence, "GeneratedCode", "Example", Console.Out);
+
+                for (int i = 0; i < sequence.TrackCount; i++) {
+                    MidiSequence newSequence = new MidiSequence(Format.Zero, sequence.Division);
+                    newSequence.AddTrack(sequence[i]);
+                    using (Stream outputStream = File.OpenWrite(args[0] + "." + i + ".mid")) {
+                        newSequence.Save(outputStream);
+                    }
+                }
             }
             catch (Exception exc) {
                 Console.Error.WriteLine("Error: {0}", exc.Message);

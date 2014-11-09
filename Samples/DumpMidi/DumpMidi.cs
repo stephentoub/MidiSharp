@@ -18,7 +18,7 @@ namespace DumpMidi
         static void Main(string[] args)
         {
             if (args.Length != 1) {
-                Console.WriteLine("Usage: {0} filename.mid");
+                Console.WriteLine("Usage: DumpMidi.exe filename.mid");
                 Console.WriteLine("    filename.mid = MIDI file from which to extract lyric events text");
                 Console.WriteLine();
                 return;

@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MidiSharp.Tests", "MidiShar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerateMidiCode", "Samples\GenerateMidiCode\GenerateMidiCode.csproj", "{84DCB4B8-4333-44CD-9B26-E461CE927A16}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeparateTracks", "Samples\SeparateTracks\SeparateTracks.csproj", "{15DC9CF2-0092-4570-8B9E-535DFC674E53}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{84DCB4B8-4333-44CD-9B26-E461CE927A16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84DCB4B8-4333-44CD-9B26-E461CE927A16}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84DCB4B8-4333-44CD-9B26-E461CE927A16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15DC9CF2-0092-4570-8B9E-535DFC674E53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15DC9CF2-0092-4570-8B9E-535DFC674E53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15DC9CF2-0092-4570-8B9E-535DFC674E53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15DC9CF2-0092-4570-8B9E-535DFC674E53}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -56,5 +62,6 @@ Global
 		{01F2E86A-5CB4-416E-9724-6409C50AAF3C} = {70756798-AF20-44E6-8873-91BC710B29A3}
 		{2F89DD88-6CF5-4EA1-8746-8ECB1B18D713} = {70756798-AF20-44E6-8873-91BC710B29A3}
 		{84DCB4B8-4333-44CD-9B26-E461CE927A16} = {70756798-AF20-44E6-8873-91BC710B29A3}
+		{15DC9CF2-0092-4570-8B9E-535DFC674E53} = {70756798-AF20-44E6-8873-91BC710B29A3}
 	EndGlobalSection
 EndGlobal
