@@ -24,6 +24,15 @@ namespace MidiSharp
             m_owningSequence = sequence;
         }
 
+        /// <summary>Adds a new track to the track collection.</summary>
+        /// <returns>The newly added track.</returns>
+        public MidiTrack AddNewTrack()
+        {
+            MidiTrack track = new MidiTrack();
+            Add(track);
+            return track;
+        }
+
         /// <summary>Adds a collection of tracks to this collection.</summary>
         /// <param name="tracks">The tracks to add.</param>
         public void AddRange(IEnumerable<MidiTrack> tracks)

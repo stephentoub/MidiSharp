@@ -23,7 +23,7 @@ namespace MidiSharp.Events.Meta.Text
         internal BaseTextMetaMidiEvent(long deltaTime, byte metaEventID, string text) :
             base(deltaTime, metaEventID)
         {
-            m_text = text;
+            Text = text;
         }
 
         /// <summary>Generate a string representation of the event.</summary>

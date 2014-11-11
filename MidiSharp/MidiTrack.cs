@@ -40,6 +40,7 @@ namespace MidiSharp
         /// <returns>The track to copy.</returns>
         public MidiTrack(MidiTrack source) : this()
         {
+            Validate.NonNull("source", source);
             m_requireEndOfTrack = source.RequireEndOfTrack;
             foreach (var e in source.Events) {
                 m_events.Add(e.DeepClone());

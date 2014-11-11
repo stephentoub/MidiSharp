@@ -16,17 +16,6 @@ namespace MidiSharp
     /// <summary>Common manipulations of MidiSequences.</summary>
     public static class MidiSequenceExtensions
     {
-        /// <summary>Adds a new, empty track to the sequence.</summary>
-        /// <param name="sequence">The sequence to which the track should be added.</param>
-        /// <returns>The new track.</returns>
-        public static MidiTrack AddTrack(this MidiSequence sequence)
-        {
-            Validate.NonNull("sequence", sequence);
-            MidiTrack track = new MidiTrack();
-            sequence.Tracks.Add(track);
-            return track;
-        }
-
         /// <summary>Transposes a MIDI sequence up/down the specified number of half-steps.</summary>
         /// <param name="sequence">The sequence to be transposed.</param>
         /// <param name="steps">The number of steps up(+) or down(-) to transpose the sequence.</param>
@@ -79,7 +68,7 @@ namespace MidiSharp
             // Copy each track up to the specified time limit
             foreach (MidiTrack track in sequence) {
                 // Create a new track in the new sequence to match the old track in the old sequence
-                MidiTrack newTrack = newSequence.AddTrack();
+                MidiTrack newTrack = newSequence.Tracks.AddNewTrack();
 
                 // Convert all times in the old track to deltas
                 track.Events.ConvertDeltasToTotals();

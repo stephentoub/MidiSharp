@@ -9,8 +9,6 @@ namespace MidiSharp
 	/// <summary>The number of sharps or flats in the key signature.</summary>
 	public enum Key : sbyte
     {
-        /// <summary>The minimum valid value for this enum.</summary>
-        MinValue = Flat7,
         /// <summary>Key has 7 flats.</summary>
         Flat7 = -7,
         /// <summary>Key has 6 flats.</summary>
@@ -41,7 +39,5 @@ namespace MidiSharp
 		Sharp6 = 6,
 		/// <summary>Key has 7 sharps.</summary>
 		Sharp7 = 7,
-        /// <summary>The maximum valid value for this enum.</summary>
-        MaxValue = Sharp7
 	}
 }

@@ -6,7 +6,9 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MidiSharp.Events.Meta;
+using MidiSharp.Events.Meta.Text;
 using MidiSharp.Events.Voice.Note;
+using System;
 using System.IO;
 using System.Linq;
 
@@ -16,22 +18,48 @@ namespace MidiSharp.Tests
     public sealed class SequenceTests
     {
         [TestMethod]
-        public void RoundtripEvents()
+        public void SequenceArgValidation()
         {
-            MidiSequence seq1 = CreateScaleSequence();
-
-            string tmpPath = Path.GetTempFileName();
-            using (var s = File.OpenWrite(tmpPath)) {
-                seq1.Save(s);
+            new MidiSequence();
+            new MidiSequence(new MidiSequence());
+            foreach (Format format in Enum.GetValues(typeof(Format))) {
+                foreach (int division in new[] { 0, 1, 100, 1000, int.MaxValue }) {
+                    new MidiSequence(format, division);
+                }
             }
 
-            MidiSequence seq2;
+            Utils.AssertThrows<ArgumentNullException>(() => new MidiSequence(null));
+            Utils.AssertThrows<ArgumentOutOfRangeException>(() => new MidiSequence((Format)(-1), 1));
+            Utils.AssertThrows<ArgumentOutOfRangeException>(() => new MidiSequence((Format)(3), 1));
+            Utils.AssertThrows<ArgumentOutOfRangeException>(() => new MidiSequence(Format.One, -1));
+        }
+
+        [TestMethod]
+        public void TrackArgValidation()
+        {
+            new MidiTrack();
+            new MidiTrack(new MidiTrack());
+            Utils.AssertThrows<ArgumentNullException>(() => new MidiTrack(null));
+        }
+
+        [TestMethod]
+        public void RoundtripEvents1()
+        {
+            RoundtripEventsCore(CreateScaleSequence());
+        }
+
+        [TestMethod]
+        public void RoundtripEvents2()
+        {
+            RoundtripEventsCore(CreateAllInclusiveSequence());
+        }
+
+        private void RoundtripEventsCore(MidiSequence seq1)
+        {
+            string tmpPath = Utils.SaveToTempFile(seq1);
             using (var s = File.OpenRead(tmpPath)) {
-                seq2 = MidiSequence.Open(s);
+                Utils.AssertAreEqual(seq1, MidiSequence.Open(s));
             }
-
-            AssertAreEqual(seq1, seq2);
-
             File.Delete(tmpPath);
         }
 
@@ -42,7 +70,7 @@ namespace MidiSharp.Tests
             MidiSequence seq2 = new MidiSequence(seq1);
 
             Assert.AreNotSame(seq1, seq2);
-            AssertAreEqual(seq1, seq2);
+            Utils.AssertAreEqual(seq1, seq2);
         }
 
         [TestMethod]
@@ -72,8 +100,8 @@ namespace MidiSharp.Tests
 
         static MidiSequence CreateScaleSequence()
         {
-            var sequence = new MidiSequence();
-            var events = sequence.AddTrack().Events;
+            MidiSequence sequence = new MidiSequence();
+            MidiEventCollection events = sequence.Tracks.AddNewTrack().Events;
 
             string[] notes = new[] { "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6", "C6", "B5", "A5", "G5", "F5", "E5", "D5", "C5" };
             events.AddRange(notes.SelectMany(note => NoteVoiceMidiEvent.Complete(100, 0, note, 127, 100)));
@@ -82,24 +110,38 @@ namespace MidiSharp.Tests
             return sequence;
         }
 
-        static void AssertAreEqual(MidiSequence sequence1, MidiSequence sequence2)
+        static MidiSequence CreateAllInclusiveSequence()
         {
-            Assert.AreEqual(sequence1.Format, sequence2.Format);
-            Assert.AreEqual(sequence1.Division, sequence2.Division);
-            Assert.AreEqual(sequence1.DivisionType, sequence2.DivisionType);
-            Assert.AreEqual(sequence1.Tracks.Count, sequence2.Tracks.Count);
+            MidiSequence sequence = new MidiSequence(Format.One, 480);
+            MidiTrack track1 = sequence.Tracks.AddNewTrack();
+            MidiTrack track2 = sequence.Tracks.AddNewTrack();
 
-            for (int i = 0; i < sequence1.Tracks.Count; i++) {
-                AssertAreEqual(sequence1.Tracks[i], sequence2.Tracks[i]);
-            }
-        }
+            track1.Events.Add(new CopyrightTextMetaMidiEvent(0, "Copyright"));
+            track1.Events.Add(new CuePointTextMetaMidiEvent(1, "CuePoint"));
+            track1.Events.Add(new DeviceNameTextMidiEvent(2, "DeviceName"));
+            track1.Events.Add(new InstrumentTextMetaMidiEvent(3, "Instrument"));
+            track1.Events.Add(new LyricTextMetaMidiEvent(4, "Lyric"));
+            track1.Events.Add(new MarkerTextMetaMidiEvent(5, "Marker"));
+            track1.Events.Add(new ProgramNameTextMetaMidiEvent(6, "ProgramName"));
+            track1.Events.Add(new SequenceTrackNameTextMetaMidiEvent(7, "SequenceTrackName"));
+            track1.Events.Add(new TextMetaMidiEvent(7, "Text"));
+            track1.Events.Add(new EndOfTrackMetaMidiEvent(0));
 
-        static void AssertAreEqual(MidiTrack track1, MidiTrack track2)
-        {
-            Assert.AreEqual(track1.Events.Count, track2.Events.Count);
-            for (int j = 0; j < track1.Events.Count; j++) {
-                Assert.AreEqual(track1.Events[j].ToString(), track2.Events[j].ToString());
-            }
+            track2.Events.Add(new ChannelPrefixMetaMidiEvent(0, 17));
+            track2.Events.Add(new KeySignatureMetaMidiEvent(1, Key.Flat4, Tonality.Minor));
+            track2.Events.Add(new MidiPortMetaMidiEvent(2, 1));
+            track2.Events.Add(new ProprietaryMetaMidiEvent(3, new byte[] { 0, 1, 2, 3 }));
+            track2.Events.Add(new SequenceNumberMetaMidiEvent(4, 123));
+            track2.Events.Add(new SMPTEOffsetMetaMidiEvent(0, 1, 2, 3, 4, 5));
+            track2.Events.Add(new TempoMetaMidiEvent(0, 123));
+            track2.Events.Add(new TimeSignatureMetaMidiEvent(0, 1, 2, 3, 4));
+            track2.Events.Add(new UnknownMetaMidiEvent(0, 123, new byte[] { 1, 2, 3 }));
+
+            track2.Events.Add(new EndOfTrackMetaMidiEvent(0));
+
+            // TODO: Finish adding at least one of each event type
+            
+            return sequence;
         }
     }
 }

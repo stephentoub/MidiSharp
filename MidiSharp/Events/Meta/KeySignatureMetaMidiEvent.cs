@@ -62,7 +62,7 @@ namespace MidiSharp.Events.Meta
             get { return m_key; }
             set
             {
-                Validate.InRange("Key", (sbyte)value, (sbyte)MidiSharp.Key.MinValue, (sbyte)MidiSharp.Key.MaxValue);
+                Validate.InRange("Key", (sbyte)value, (sbyte)MidiSharp.Key.Flat7, (sbyte)MidiSharp.Key.Sharp7);
                 m_key = value;
             }
         }
@@ -73,7 +73,7 @@ namespace MidiSharp.Events.Meta
             get { return m_tonality; }
             set
             {
-                Validate.InRange("Tonality", (byte)value, (byte)MidiSharp.Tonality.MinValue, (byte)MidiSharp.Tonality.MaxValue);
+                Validate.InRange("Tonality", (byte)value, (byte)MidiSharp.Tonality.Major, (byte)MidiSharp.Tonality.Minor);
                 m_tonality = value;
             }
         }
