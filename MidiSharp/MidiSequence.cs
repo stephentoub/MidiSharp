@@ -85,7 +85,7 @@ namespace MidiSharp
         /// <summary>Gets the division type of the sequence.</summary>
         public DivisionType DivisionType
         {
-            get { return (Division & 0x8000) != 0 ? DivisionType.TicksPerBeat : DivisionType.FramesPerSecond; }
+            get { return (Division & 0x8000) != 0 ? DivisionType.FramesPerSecond : DivisionType.TicksPerBeat; }
         }
 
         /// <summary>
